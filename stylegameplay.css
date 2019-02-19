@@ -1,0 +1,90 @@
+/*body {
+	height: 100%;
+	background: linear-gradient(to bottom, #006666 0%, #0099cc 100%);
+	background-repeat: no-repeat;
+ 	background-attachment: fixed;
+}*/
+
+canvas {
+ 	position: absolute;
+	top: 0;
+	left: 0;
+	background: linear-gradient(to bottom, #006666 0%, #0099cc 100%);
+}
+
+h2{
+	display: inline;
+	color: white;
+	font-family: "Verdana", sans-serif;
+	font-size: 200%;
+	opacity: 0.8;
+	
+}
+
+.button{
+	background-color: white;
+	border: none;
+	width: 10%;
+	height: 10%;
+	padding: 2% 1%;
+	margin: 1%;
+	font-family: Verdana, Geneva, sans-serif;
+	font-weight: bold;
+	font-size: 200%;
+	text-align: center;
+	border-radius: 15px;
+	opacity: 0.8;
+	display: inline-block;
+}
+
+.jumpbutton{
+	background-color: white;
+	border: none;
+	width: 20%;
+	height: 10%;
+	padding: 2% 1%;
+	margin: 1%;
+	font-family: Verdana, Geneva, sans-serif;
+	font-weight: bold;
+	font-size: 200%;
+	text-align: center;
+	border-radius: 15px;
+	opacity: 0.8;
+	display: inline-block;
+}
+
+.volume{
+	position: absolute;
+	right: 4%;
+	top: 6%;
+}
+
+.key{
+	position: absolute;
+	right: 15%;
+	top: 2%;
+}
+
+.userInterface{
+	margin: auto;
+	width: 95%;
+	padding: 2%;
+	position: absolute;
+	bottom: 0;
+}
+
+#jump{
+	float: right;
+}
+
+#leftArrow{
+	float: left;
+}
+
+#rightArrow{
+	float: left;
+}
+
+button:active{
+	opacity: 0.9;
+}
