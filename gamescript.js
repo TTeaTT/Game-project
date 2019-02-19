@@ -2,15 +2,24 @@ var player;
 var lives = 3;
 var floor1;
 var danger1, danger2;
+var key;
+var door;
+var keyGot = false;
+var coin1;
 
 // FUNCTION TO START THE GAME
 function startGame() {
 	gameArea.start();
-	player = new component(50, 50, "img/player.png", 10, 300, "image");
+
 	floor1 = new component(window.innerWidth / 2, window.innerHeight, "black",
 			0, 350)
 	danger1 = new component(20, 50, "red", 200, 300);
 	danger2 = new component(20, 80, "red", 400, 270);
+	key = new component(65, 41, "img/small_key.png", 200, 250, "image");
+	door = new component(100, 150, "img/door.png", window.innerWidth - 150, 50,
+			"image");
+	coin1 = new component(30, 30, "img/coin.png", 500, 100, "image");
+	player = new component(50, 50, "img/player.png", 10, 300, "image");
 }
 
 // CREATE A COMPONENT
@@ -26,6 +35,8 @@ function component(width, height, color, x, y, type) {
 	this.speedY = 0;
 	this.x = x;
 	this.y = y;
+	// this.gravity = 0.05;
+	// this.gravitySpeed = 0;
 	this.update = function() {
 		ctx = gameArea.context;
 		if (type == "image") {
@@ -36,11 +47,12 @@ function component(width, height, color, x, y, type) {
 		}// end else
 	}// end this.update
 	this.newPos = function() {
+		// this.gravitySpeed += this.gravity;
 		this.x += this.speedX;
-		this.y += this.speedY;
+		this.y += this.speedY;// + this.gravitySpeed;
 	}// end this.newPos
 
-	//COLLISION
+	// COLLISION
 	this.crashWith = function(otherobj) {
 		var myleft = this.x;
 		var myright = this.x + (this.width);
@@ -91,34 +103,54 @@ var gameArea = {
 
 // MOVING
 function moveUp() {
-	player.speedY -= 1;
+	player.speedY -= 5;
 }
 
 function moveLeft() {
-	player.speedX -= 1;
+	player.speedX -= 5;
 }
 function moveRight() {
-	player.speedX += 1;
+	player.speedX += 5;
 }
 function stopMove() {
 	player.speedX = 0;
 	player.speedY = 0;
 }
 
-
-
-
 // UPDATE GAME AREA
 function updateGameArea() {
-	
+
 	if (player.crashWith(danger1) || player.crashWith(danger2)) {
 		gameArea.stop();
-	} else {
-		gameArea.clear();
-		player.newPos();
-		player.update();
-		floor1.update();
-		danger1.update();
-		danger2.update();
-	}// end else
+		if (keyGot == true) {
+			key.y = -500;
+		}
+	}
+	if (player.crashWith(key)) {
+		document.getElementById("keyslot").src = "img/key.png";
+		keyGot = true;
+		key.y = -500; //not an elegant way to make it disappear, but works for now...
+	}
+	
+	if (player.crashWith(door) && keyGot){
+		window.location.href = "scores.html";
+	}
+	
+	if (player.crashWith(coin1)){
+		coin1.y=-500;//not an elegant way to make it disappear, but works for now...
+	}
+	// if (player.crashWith(floor1)) {
+	// player.y = 250;
+	// player.speedY = 0;
+	// }
+	gameArea.clear();
+	floor1.update();
+	danger1.update();
+	danger2.update();
+	key.update();
+	door.update();
+	coin1.update();
+	player.newPos();
+	player.update();
+	
 }
