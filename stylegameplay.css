@@ -5,6 +5,10 @@
  	background-attachment: fixed;
 }*/
 
+body {
+	background: black;
+}
+
 canvas {
  	position: absolute;
 	top: 0;
