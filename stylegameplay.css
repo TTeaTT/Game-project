@@ -89,6 +89,11 @@ h2{
 	float: left;
 }
 
+#time {
+	size: 40px;
+	color: red;
+}
+
 button:active{
 	opacity: 0.9;
 }

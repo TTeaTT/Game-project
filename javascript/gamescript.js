@@ -1,61 +1,43 @@
 var player;
 var lives = 3;
-var floor1;
+var platform1;
 var danger1, danger2;
-var key;
+var key, keyGot = false;
 var door;
-var keyGot = false;
-var coin1;
-var coin1Got = false;
+var coin1, coin1Got = false;
 var score = 0;
 
-// KEYBOARD CONTROLS
-document.addEventListener('keydown', keyDownHandler, false);
-document.addEventListener('keyup', keyUpHandler, false);
-var rightPressed = false;
-var leftPressed = false;
-var upPressed = false;
-var downPressed = false;
-function keyDownHandler(event) {
-    if(event.keyCode == 39) {
-        rightPressed = true;
-        moveRight();
-    }
-    else if(event.keyCode == 37) {
-        leftPressed = true;
-        moveLeft();
-    }else if(event.keyCode == 38) {
-    	upPressed = true;
-    	moveUp();
-    }
+
+// TIMER
+var totalSeconds = 0;
+var totalMinutes = 0;
+function countTime() {
+	totalSeconds++;
+	
+	//I added minutes as well
+	//idk why, but when the seconds are at 0 I can't display it as "0:00", only as "0:0"
+	if (totalSeconds<10){
+		totalSeconds = "0"+totalSeconds;
+	}
+	else if (totalSeconds==60){
+		totalMinutes++;
+		totalSeconds=0;
+	}
 }
-function keyUpHandler(event) {
-    if(event.keyCode == 39) {
-        rightPressed = false;
-        stopMove();
-    }
-    else if(event.keyCode == 37) {
-        leftPressed = false;
-        stopMove();
-    }
-    else if(event.keyCode == 38) {
-    	upPressed = false;
-    	stopMove();
-    }
-}
+window.setInterval(countTime,1000);
+window.clearInterval(countTime);
 
 
 // FUNCTION TO START THE GAME
 function startGame() {
 	gameArea.start();
-
-	floor1 = new component(100, 50, "black", 200, 200)
-	danger1 = new component(20, 50, "red", 200, window.innerHeight * 0.75 - 50);
-	danger2 = new component(20, 80, "red", 400, window.innerHeight * 0.75 - 80);
-	key = new component(65, 41, "img/small_key.png", 200, 250, "image");
-	door = new component(100, 150, "img/door.png", window.innerWidth - 150,
+	platform1 = new component(100, 50, "black", 1000, 400)
+	danger1 = new component(10, 25, "red", 200, gameArea.canvas.height - 25);
+	danger2 = new component(10, 25, "red", 400, gameArea.canvas.height - 25);
+	key = new component(65, 41, "img/small_key.png", 800, gameArea.canvas.height - 131, "image");
+	door = new component(100, 150, "img/door.png", gameArea.canvas.width - 150,
 			window.innerHeight * 0.75 - 150, "image");
-	coin1 = new component(30, 30, "img/coin.png", 500, 100, "image");
+	coin1 = new component(30, 30, "img/coin.png", 600, gameArea.canvas.height - 120, "image");
 	player = new component(50, 50, "img/player.png", 10,
 			(window.innerHeight * 0.75 - 50), "image");
 }
@@ -73,27 +55,28 @@ function component(width, height, color, x, y, type) {
 	this.speedY = 0;
 	this.x = x;
 	this.y = y;
-	// this.gravity += 0.05;
-	// // this.gravitySpeed = 0;
-	this.gravity = 0.05;
-	this.gravitySpeed = 0;
+	this.jumping = false;
 	this.update = function() {
 		ctx = gameArea.context;
 		ctx.font = "40px Verdana";
 		ctx.fillText(("Score: " + score), 10, 50);
-		ctx.fillText(("Time: "), 10, 90);
+		ctx.fillText(("Time: " + totalMinutes + ":" + totalSeconds), 10, 90);
 		ctx.fillStyle = "white";
 		if (type == "image") {
 			ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
 		} else {
 			ctx.fillStyle = color;
 			ctx.fillRect(this.x, this.y, this.width, this.height);
-		}// end else
+		}
+		if(player.y == gameArea.canvas.height - player.height) {
+			player.jumping = false;
+		}
 	}// end this.update
 	this.newPos = function() {
-		this.gravitySpeed += this.gravity;
+		this.speedY += 1.5;
 		this.x += this.speedX;
-		this.y += this.speedY + this.gravitySpeed;
+		this.y += this.speedY;
+		this.speedY *= 0.95;
 		this.hitBottom();
 		this.hitLeft();
 		this.hitRight();
@@ -105,11 +88,7 @@ function component(width, height, color, x, y, type) {
 			player.y = (gameArea.canvas.height - player.height);
 		}
 	}
-// this.hitTop = function() {
-// if (player.y < player.height) {
-// player.y = player.height);
-// }
-// }
+
 	this.hitLeft = function() {
 		if (player.x < 0) {
 			player.x = 0;
@@ -138,6 +117,7 @@ function component(width, height, color, x, y, type) {
 		}
 		return crash;
 	}
+	
 }// end component
 
 // GAME AREA
@@ -172,8 +152,10 @@ var gameArea = {
 
 // MOVING
 function moveUp() {
-	player.speedY = -20;
-	player.gravity = -0.2;
+	if(player.jumping == false) {
+		player.speedY = -20;
+		player.jumping = true;
+	}
 }
 
 function moveLeft() {
@@ -185,7 +167,6 @@ function moveRight() {
 function stopMove() {
 	player.speedX = 0;
 	player.speedY = 0;
-	player.gravity = 0.05;
 }
 
 // UPDATE GAME AREA
@@ -217,22 +198,12 @@ function updateGameArea() {
 		coin1.y = -500;// not an elegant way to make it disappear, but works
 						// for now...
 	}
-	if (player.crashWith(floor1)) {
-		player.y = floor1.y - floor1.height;
+	if (player.crashWith(platform1)) {
+		player.y = platform1.y - platform1.height;
 		player.speedY = 0;
-		
-// if (mybottom == othertop){
-// player.y = othertop -1;
-// } else if (mytop == otherbottom){
-// player.y = otherbottom + player.height +1;
-// } else if (myright == otherleft){
-// player.x = otherleft - player.width -1;
-// } else if (myleft == otherright) {
-// player.x = otherright +1;
-// }
 	}
 	gameArea.clear();
-	floor1.update();
+	platform1.update();
 	danger1.update();
 	danger2.update();
 	key.update();
@@ -241,4 +212,41 @@ function updateGameArea() {
 	player.newPos();
 	player.update();
 	
+}
+
+
+// KEYBOARD CONTROLS
+document.addEventListener('keydown', keyDownHandler, false);
+document.addEventListener('keyup', keyUpHandler, false);
+
+var rightPressed = false,
+	leftPressed = false,
+	upPressed = false;
+
+function keyDownHandler(event) {
+    if(event.keyCode == 39) {
+        rightPressed = true;
+        moveRight();
+    }
+    else if(event.keyCode == 37) {
+        leftPressed = true;
+        moveLeft();
+    }else if(event.keyCode == 38) {
+    	upPressed = true;
+    	moveUp();
+    }
+}
+function keyUpHandler(event) {
+    if(event.keyCode == 39) {
+        rightPressed = false;
+        stopMove();
+    }
+    else if(event.keyCode == 37) {
+        leftPressed = false;
+        stopMove();
+    }
+    else if(event.keyCode == 38) {
+    	upPressed = false;
+    	stopMove();
+    }
 }

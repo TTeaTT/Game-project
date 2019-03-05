@@ -2,7 +2,7 @@
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="stylegameplay.css">
-	<script type="text/javascript" src="gamescript.js"></script>
+	<script type="text/javascript" src="javascript/gamescript.js"></script>
 </head>
 <title>The Game</title>
 <body onload="startGame()">
@@ -14,20 +14,21 @@
 		<img src="img/volume.png" alt="volume">
 	</div>
 	
+	<!--
 	<div align="left" id="score">
-<!-- 	<h2>SCORE:</h2>	<h2> 10000</h2> -->
+ 	<h2>SCORE:</h2>	<h2> 10000</h2> 
 	</div>
 
 	<div align="left" id="time">
-<!-- 	<h2>TIME:</h2> <h2> 1:55</h2> -->
+			
 	</div>
+	-->
 
 
 	<div id="userInterface" class="userInterface" align="center">
 
 		<button onmousedown="moveLeft()" onmouseup="stopMove()" ontouchstart="moveLeft()" id="leftArrow" class="button">&#8249 </button>
 		<button onmousedown="moveRight()" onmouseup="stopMove()" ontouchstart="moveRight()" id="rightArrow" class="button">&#8250 </button> 
-		
 		<h2> LIVES: </h2>
 		<img id="life1" src="img/life.png" alt="life">
 		<img id="life2" src="img/life.png" alt="life">
