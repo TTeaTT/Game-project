@@ -31,13 +31,13 @@ window.clearInterval(countTime);
 // FUNCTION TO START THE GAME
 function startGame() {
 	gameArea.start();
-	platform1 = new component(100, 50, "black", 1000, 400)
+	platform1 = new component(100, 50, "black", gameArea.canvas.width/2, 400)
 	danger1 = new component(10, 25, "red", 200, gameArea.canvas.height - 25);
 	danger2 = new component(10, 25, "red", 400, gameArea.canvas.height - 25);
-	key = new component(65, 41, "img/small_key.png", 800, gameArea.canvas.height - 131, "image");
+	key = new component(65, 41, "img/small_key.png", gameArea.canvas.width/1.5, gameArea.canvas.height - 131, "image");
 	door = new component(100, 150, "img/door.png", gameArea.canvas.width - 150,
 			window.innerHeight * 0.75 - 150, "image");
-	coin1 = new component(30, 30, "img/coin.png", 600, gameArea.canvas.height - 120, "image");
+	coin1 = new component(30, 30, "img/coin.png", gameArea.canvas.width/3, gameArea.canvas.height - 120, "image");
 	player = new component(50, 50, "img/player.png", 10,
 			(window.innerHeight * 0.75 - 50), "image");
 }
