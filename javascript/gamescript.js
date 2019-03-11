@@ -1,45 +1,26 @@
 var player;
 var lives = 3;
-var platform1;
+var platform1, platform2;
 var danger1, danger2;
 var key, keyGot = false;
 var door;
 var coin1, coin1Got = false;
 var score = 0;
-
-
-// TIMER
-var totalSeconds = 0;
-var totalMinutes = 0;
-function countTime() {
-	totalSeconds++;
-	
-	//I added minutes as well
-	//idk why, but when the seconds are at 0 I can't display it as "0:00", only as "0:0"
-	if (totalSeconds<10){
-		totalSeconds = "0"+totalSeconds;
-	}
-	else if (totalSeconds==60){
-		totalMinutes++;
-		totalSeconds=0;
-	}
-}
-window.setInterval(countTime,1000);
-window.clearInterval(countTime);
-
+var playerOnPlatform = false; // new variable needed to implement jumping on platforms
 
 // FUNCTION TO START THE GAME
 function startGame() {
 	gameArea.start();
-	platform1 = new component(100, 50, "black", gameArea.canvas.width/2, 400)
+	platform1 = new component(100, 20, "black", gameArea.canvas.width/2-100, gameArea.canvas.height-90);
+	platform2 = new component(100, 20, "black", gameArea.canvas.width/3, gameArea.canvas.height-160);
 	danger1 = new component(10, 25, "red", 200, gameArea.canvas.height - 25);
-	danger2 = new component(10, 25, "red", 400, gameArea.canvas.height - 25);
+	danger2 = new component(10, 25, "red", gameArea.canvas.width/1.8, gameArea.canvas.height - 25);
 	key = new component(65, 41, "img/small_key.png", gameArea.canvas.width/1.5, gameArea.canvas.height - 131, "image");
 	door = new component(100, 150, "img/door.png", gameArea.canvas.width - 150,
 			window.innerHeight * 0.75 - 150, "image");
-	coin1 = new component(30, 30, "img/coin.png", gameArea.canvas.width/3, gameArea.canvas.height - 120, "image");
+	coin1 = new component(30, 30, "img/coin.png", gameArea.canvas.width/3+35, gameArea.canvas.height - 200, "image");
 	player = new component(50, 50, "img/player.png", 10,
-			(window.innerHeight * 0.75 - 50), "image");
+			(window.innerHeight * 0.75 - 100), "image");
 }
 
 // CREATE A COMPONENT
@@ -60,16 +41,13 @@ function component(width, height, color, x, y, type) {
 		ctx = gameArea.context;
 		ctx.font = "40px Verdana";
 		ctx.fillText(("Score: " + score), 10, 50);
-		ctx.fillText(("Time: " + totalMinutes + ":" + totalSeconds), 10, 90);
+		ctx.fillText(("Time:  " + totalMinutes + ":" + totalSeconds), 10, 90);
 		ctx.fillStyle = "white";
 		if (type == "image") {
 			ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
 		} else {
 			ctx.fillStyle = color;
 			ctx.fillRect(this.x, this.y, this.width, this.height);
-		}
-		if(player.y == gameArea.canvas.height - player.height) {
-			player.jumping = false;
 		}
 	}// end this.update
 	this.newPos = function() {
@@ -80,12 +58,23 @@ function component(width, height, color, x, y, type) {
 		this.hitBottom();
 		this.hitLeft();
 		this.hitRight();
+		if(player.y == gameArea.canvas.height - player.height  || playerOnPlatform == true) {
+			player.jumping = false;
+		}
 		
 	}// end this.newPos
 
-	this.hitBottom = function() {
+	this.hitBottom = function() { // now we must check whether player hit the floor...
 		if (player.y > gameArea.canvas.height - player.height) {
 			player.y = (gameArea.canvas.height - player.height);
+		}
+		else if (player.crashWithPlatform(platform1)) { // ...or a platform 
+			player.y = platform1.y - player.height;
+			playerOnPlatform = true;
+		}
+		else if (player.crashWithPlatform(platform2)) { // ...or a platform 
+			player.y = platform2.y - player.height;
+			playerOnPlatform = true;
 		}
 	}
 
@@ -113,6 +102,23 @@ function component(width, height, color, x, y, type) {
 		var crash = true;
 		if ((mybottom < othertop) || (mytop > otherbottom)
 				|| (myright < otherleft) || (myleft > otherright)) {
+			crash = false;
+		}
+		
+		return crash;
+	}
+	this.crashWithPlatform = function(otherobj) {
+		var myleft = this.x;
+		var myright = this.x + (this.width);
+		var mytop = this.y;
+		var mybottom = this.y + (this.height);
+		var otherleft = otherobj.x;
+		var otherright = otherobj.x + (otherobj.width);
+		var othertop = otherobj.y;
+		var otherbottom = otherobj.y + (otherobj.height);
+		var crash = true;
+		if((mybottom < othertop) || (mytop > otherbottom)
+			|| (myright < otherleft) || (myleft > otherright)) {
 			crash = false;
 		}
 		return crash;
@@ -152,7 +158,12 @@ var gameArea = {
 
 // MOVING
 function moveUp() {
-	if(player.jumping == false) {
+	if(player.jumping == false && playerOnPlatform == true) { // new condition which allowes jumping on platforms 
+		player.speedY = -20;
+		player.jumping = true;
+		playerOnPlatform = false;
+	}	
+	else if(player.jumping == false) {
 		player.speedY = -20;
 		player.jumping = true;
 	}
@@ -172,7 +183,7 @@ function stopMove() {
 // UPDATE GAME AREA
 function updateGameArea() {
 
-	if (player.crashWith(danger1) || player.crashWith(danger2)) {
+	if (player.crashWithPlatform(danger1) || player.crashWith(danger2)) {
 		gameArea.stop();
 		if (keyGot == true) {
 			key.y = -500;
@@ -198,12 +209,9 @@ function updateGameArea() {
 		coin1.y = -500;// not an elegant way to make it disappear, but works
 						// for now...
 	}
-	if (player.crashWith(platform1)) {
-		player.y = platform1.y - platform1.height;
-		player.speedY = 0;
-	}
 	gameArea.clear();
 	platform1.update();
+	platform2.update();
 	danger1.update();
 	danger2.update();
 	key.update();
@@ -211,9 +219,27 @@ function updateGameArea() {
 	coin1.update();
 	player.newPos();
 	player.update();
-	
 }
 
+// TIMER
+var totalSeconds = 0;
+var totalMinutes = 0;
+function countTime() {
+	totalSeconds++;
+	//idk why, but when the seconds are at 0 I can't display it as "0:00", only as "0:0"
+	if(totalSeconds == 0) {
+		totalSeconds = "0"+"0"+totalSeconds;
+	}
+	if (totalSeconds<10){
+		totalSeconds = "0"+totalSeconds;
+	}
+	else if (totalSeconds==60){
+		totalMinutes++;
+		totalSeconds=0;
+	}
+}
+window.setInterval(countTime,1000);
+window.clearInterval(countTime);
 
 // KEYBOARD CONTROLS
 document.addEventListener('keydown', keyDownHandler, false);
