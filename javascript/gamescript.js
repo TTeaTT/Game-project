@@ -1,31 +1,50 @@
 var player;
 var lives = 3;
 var platform1, platform2, platform3, platform4, platform5;
-var danger1, danger2;
+var danger1, danger2, danger3, danger4, danger5, danger6, danger7, danger8;
 var key, keyGot = false;
 var door;
 var coin1, coin1Got = false;
 var coin2, coin2Got = false;
+var coin3, coin3Got = false;
+var coin4, coin4Got = false;
+var coin5, coin5Got = false;
+var coin6, coin6Got = false;
+var coin7, coin7Got = false;
 var score = 0;
-var playerOnPlatform = false; // new variable needed to implement jumping on platforms
+var playerOnPlatform = false; // new variable needed to implement jumping on
+								// platforms
 
 // FUNCTION TO START THE GAME
 function startGame() {
 	gameArea.start();
+	key = new component(65, 41, "img/small_key.png", gameArea.canvas.width/2.30, gameArea.canvas.height-300, "image");
+	door = new component(100, 150, "img/door.png", gameArea.canvas.width - 150,window.innerHeight * 0.75 - 150, "image");
+	player = new component(50, 50, "img/player.png", 10,(window.innerHeight * 0.75 - 100), "image");
+	
 	platform1 = new component(gameArea.canvas.width/20, 20, "black", gameArea.canvas.width/2-100, gameArea.canvas.height-90);
 	platform2 = new component(gameArea.canvas.width/15, 20, "black", gameArea.canvas.width/3-50, gameArea.canvas.height-160);
-	platform3 = new component(gameArea.canvas.width/10, 20, "black", gameArea.canvas.width/7, gameArea.canvas.height-230);
+	platform3 = new component(gameArea.canvas.width/9, 20, "black", gameArea.canvas.width/7, gameArea.canvas.height-230);
 	platform4 = new component(gameArea.canvas.width/10, 20, "black", gameArea.canvas.width/2.5, gameArea.canvas.height-250);
-	platform5 = new component(gameArea.canvas.width/8, 20, "black", gameArea.canvas.width/1.80, gameArea.canvas.height-200);
-	danger1 = new component(10, 25, "red", 200, gameArea.canvas.height - 25);
-	danger2 = new component(10, 25, "red", gameArea.canvas.width/1.8, gameArea.canvas.height - 25);
-	key = new component(65, 41, "img/small_key.png", gameArea.canvas.width/1.5, gameArea.canvas.height - 131, "image");
-	door = new component(100, 150, "img/door.png", gameArea.canvas.width - 150,
-			window.innerHeight * 0.75 - 150, "image");
-	coin1 = new component(30, 30, "img/coin.png", gameArea.canvas.width/5, gameArea.canvas.height - 270, "image");
+	platform5 = new component(gameArea.canvas.width/8, 20, "black", gameArea.canvas.width/1.75, gameArea.canvas.height-200);
 	
-	player = new component(50, 50, "img/player.png", 10,
-			(window.innerHeight * 0.75 - 100), "image");
+	danger1 = new component(10, 25, "red", gameArea.canvas.width/9, gameArea.canvas.height - 25);
+	danger2 = new component(10, 25, "red", gameArea.canvas.width/5, gameArea.canvas.height - 25);
+	danger3 = new component(10, 25, "red", gameArea.canvas.width/1.8, gameArea.canvas.height - 25);
+	danger4 = new component(gameArea.canvas.width/15, 10, "red", gameArea.canvas.width/3-50, gameArea.canvas.height-140);
+	danger5 = new component(gameArea.canvas.width/20, 10, "red", gameArea.canvas.width/2-100, gameArea.canvas.height-70);
+	danger6 = new component(10, 25, "red", gameArea.canvas.width/1.6, gameArea.canvas.height - 225);
+	danger7 = new component(10, 50, "red", gameArea.canvas.width/1.5, gameArea.canvas.height - 180);
+	danger8 = new component(10, 50, "red", gameArea.canvas.width/1.55, gameArea.canvas.height - 180);
+	
+	
+	coin1 = new component(30, 30, "img/coin.png", gameArea.canvas.width/5.5, gameArea.canvas.height - 270, "image");
+	coin2 = new component(30, 30, "img/coin.png", gameArea.canvas.width/3, gameArea.canvas.height - 300, "image");
+	coin3 = new component(30, 30, "img/coin.png", gameArea.canvas.width/1.9, gameArea.canvas.height - 190, "image");
+	coin4 = new component(30, 30, "img/coin.png", gameArea.canvas.width/20, gameArea.canvas.height - 200, "image");
+	coin5 = new component(30, 30, "img/coin.png", gameArea.canvas.width/1.5, gameArea.canvas.height - 90, "image");
+	coin6 = new component(30, 30, "img/coin.png", gameArea.canvas.width/3, gameArea.canvas.height - 100, "image");
+	coin7 = new component(30, 30, "img/coin.png", gameArea.canvas.width/1.61, gameArea.canvas.height - 275, "image");
 }
 
 // CREATE A COMPONENT
@@ -69,27 +88,28 @@ function component(width, height, color, x, y, type) {
 		
 	}// end this.newPos
 
-	this.hitBottom = function() { // now we must check whether player hit the floor...
+	this.hitBottom = function() { // now we must check whether player hit the
+									// floor...
 		if (player.y > gameArea.canvas.height - player.height) {
 			player.y = (gameArea.canvas.height - player.height);
 		}
-		else if (player.crashWith(platform1)) { // ...or a platform 
+		else if (player.crashWith(platform1)) { // ...or a platform
 			player.y = platform1.y - player.height;
 			playerOnPlatform = true;
 		}
-		else if (player.crashWith(platform2)) { // ...or a platform 
+		else if (player.crashWith(platform2)) { // ...or a platform
 			player.y = platform2.y - player.height;
 			playerOnPlatform = true;
 		}
-		else if (player.crashWith(platform3)) { // ...or a platform 
+		else if (player.crashWith(platform3)) { // ...or a platform
 			player.y = platform3.y - player.height;
 			playerOnPlatform = true;
 		}
-		else if (player.crashWith(platform4)) { // ...or a platform 
+		else if (player.crashWith(platform4)) { // ...or a platform
 			player.y = platform4.y - player.height;
 			playerOnPlatform = true;
 		}
-		else if (player.crashWith(platform5)) { // ...or a platform 
+		else if (player.crashWith(platform5)) { // ...or a platform
 			player.y = platform5.y - player.height;
 			playerOnPlatform = true;
 		}
@@ -160,7 +180,10 @@ var gameArea = {
 
 // MOVING
 function moveUp() {
-	if(player.jumping == false && playerOnPlatform == true) { // new condition which allowes jumping on platforms 
+	if(player.jumping == false && playerOnPlatform == true) { // new condition
+																// which allowes
+																// jumping on
+																// platforms
 		player.speedY = -20;
 		player.jumping = true;
 		playerOnPlatform = false;
@@ -185,7 +208,8 @@ function stopMove() {
 // UPDATE GAME AREA
 function updateGameArea() {
 
-	if (player.crashWith(danger1) || player.crashWith(danger2)) {
+	if (player.crashWith(danger1) || player.crashWith(danger2) || player.crashWith(danger3) || player.crashWith(danger4) || player.crashWith(danger5) 
+		|| player.crashWith(danger6) || player.crashWith(danger7) || player.crashWith(danger8)){
 		gameArea.stop();
 		if (keyGot == true) {
 			key.y = -500;
@@ -193,12 +217,29 @@ function updateGameArea() {
 		if (coin1Got == true) {
 			coin1.y = -500;
 		}
+		if (coin2Got == true) {
+			coin2.y = -500;
+		}
+		if (coin3Got == true) {
+			coin3.y = -500;
+		}
+		if (coin4Got == true) {
+			coin4.y = -500;
+		}
+		if (coin5Got == true) {
+			coin5.y = -500;
+		}
+		if (coin6Got == true) {
+			coin6.y = -500;
+		}
+		if (coin7Got == true) {
+			coin7.y = -500;
+		}
 	}
 	if (player.crashWith(key)) {
 		document.getElementById("keyslot").src = "img/key.png";
 		keyGot = true;
-		key.y = -500; // not an elegant way to make it disappear, but works
-						// for now...
+		key.y = -500;
 	}
 
 	if (player.crashWith(door) && keyGot) {
@@ -208,8 +249,37 @@ function updateGameArea() {
 	if (player.crashWith(coin1)) {
 		score = score + 100;
 		coin1Got = true;
-		coin1.y = -500;// not an elegant way to make it disappear, but works
-						// for now...
+		coin1.y = -500;
+	}
+	if (player.crashWith(coin2)) {
+		score = score + 100;
+		coin2Got = true;
+		coin2.y = -500;
+	}
+	if (player.crashWith(coin3)) {
+		score = score + 100;
+		coin3Got = true;
+		coin3.y = -500;
+	}
+	if (player.crashWith(coin4)) {
+		score = score + 100;
+		coin4Got = true;
+		coin4.y = -500;
+	}
+	if (player.crashWith(coin5)) {
+		score = score + 100;
+		coin5Got = true;
+		coin5.y = -500;
+	}
+	if (player.crashWith(coin6)) {
+		score = score + 100;
+		coin6Got = true;
+		coin6.y = -500;
+	}
+	if (player.crashWith(coin7)) {
+		score = score + 100;
+		coin7Got = true;
+		coin7.y = -500;
 	}
 	gameArea.clear();
 	platform1.update();
@@ -219,9 +289,21 @@ function updateGameArea() {
 	platform5.update();
 	danger1.update();
 	danger2.update();
+	danger3.update();
+	danger4.update();
+	danger5.update();
+	danger6.update();
+	danger7.update();
+	danger8.update();
 	key.update();
 	door.update();
 	coin1.update();
+	coin2.update();
+	coin3.update();
+	coin4.update();
+	coin5.update();
+	coin6.update();
+	coin7.update();
 	player.newPos();
 	player.update();
 }
@@ -231,7 +313,8 @@ var totalSeconds = 0;
 var totalMinutes = 0;
 function countTime() {
 	totalSeconds++;
-	//idk why, but when the seconds are at 0 I can't display it as "0:00", only as "0:0"
+	// idk why, but when the seconds are at 0 I can't display it as "0:00", only
+	// as "0:0"
 	if(totalSeconds == 0) {
 		totalSeconds = "0"+"0"+totalSeconds;
 	}
