@@ -4,13 +4,13 @@ var platform1, platform2, platform3, platform4, platform5;
 var danger1, danger2, danger3, danger4, danger5, danger6, danger7, danger8;
 var key, keyGot = false;
 var door;
-var coin1, coin1Got = false;
-var coin2, coin2Got = false;
-var coin3, coin3Got = false;
-var coin4, coin4Got = false;
-var coin5, coin5Got = false;
-var coin6, coin6Got = false;
-var coin7, coin7Got = false;
+var coin1, coin1Got = false,
+	coin2, coin2Got = false,
+	coin3, coin3Got = false,
+	coin4, coin4Got = false,
+	coin5, coin5Got = false,
+	coin6, coin6Got = false,
+    coin7, coin7Got = false;
 var score = 0;
 var playerOnPlatform = false; // new variable needed to implement jumping on
 								// platforms
@@ -22,11 +22,11 @@ function startGame() {
 	door = new component(100, 150, "img/door.png", gameArea.canvas.width - 150,window.innerHeight * 0.75 - 150, "image");
 	player = new component(50, 50, "img/player.png", 10,(window.innerHeight * 0.75 - 100), "image");
 	
-	platform1 = new component(gameArea.canvas.width/20, 20, "black", gameArea.canvas.width/2-100, gameArea.canvas.height-90);
-	platform2 = new component(gameArea.canvas.width/15, 20, "black", gameArea.canvas.width/3-50, gameArea.canvas.height-160);
-	platform3 = new component(gameArea.canvas.width/9, 20, "black", gameArea.canvas.width/7, gameArea.canvas.height-230);
-	platform4 = new component(gameArea.canvas.width/10, 20, "black", gameArea.canvas.width/2.5, gameArea.canvas.height-250);
-	platform5 = new component(gameArea.canvas.width/8, 20, "black", gameArea.canvas.width/1.75, gameArea.canvas.height-200);
+	platform1 = new component(gameArea.canvas.width/20, 20, "img/brick.png", gameArea.canvas.width/2-100, gameArea.canvas.height-90, "image");
+	platform2 = new component(gameArea.canvas.width/15, 20, "img/brick.png", gameArea.canvas.width/3-50, gameArea.canvas.height-160, "image");
+	platform3 = new component(gameArea.canvas.width/9, 20, "img/brick.png", gameArea.canvas.width/7, gameArea.canvas.height-230, "image");
+	platform4 = new component(gameArea.canvas.width/10, 20, "img/brick.png", gameArea.canvas.width/2.5, gameArea.canvas.height-250, "image");
+	platform5 = new component(gameArea.canvas.width/8, 20, "img/brick.png", gameArea.canvas.width/1.75, gameArea.canvas.height-200, "image");
 	
 	danger1 = new component(10, 25, "red", gameArea.canvas.width/9, gameArea.canvas.height - 25);
 	danger2 = new component(10, 25, "red", gameArea.canvas.width/5, gameArea.canvas.height - 25);
@@ -313,8 +313,6 @@ var totalSeconds = 0;
 var totalMinutes = 0;
 function countTime() {
 	totalSeconds++;
-	// idk why, but when the seconds are at 0 I can't display it as "0:00", only
-	// as "0:0"
 	if(totalSeconds == 0) {
 		totalSeconds = "0"+"0"+totalSeconds;
 	}
@@ -328,39 +326,3 @@ function countTime() {
 }
 window.setInterval(countTime,1000);
 window.clearInterval(countTime);
-
-// KEYBOARD CONTROLS
-document.addEventListener('keydown', keyDownHandler, false);
-document.addEventListener('keyup', keyUpHandler, false);
-
-var rightPressed = false,
-	leftPressed = false,
-	upPressed = false;
-
-function keyDownHandler(event) {
-    if(event.keyCode == 39) {
-        rightPressed = true;
-        moveRight();
-    }
-    else if(event.keyCode == 37) {
-        leftPressed = true;
-        moveLeft();
-    }else if(event.keyCode == 38) {
-    	upPressed = true;
-    	moveUp();
-    }
-}
-function keyUpHandler(event) {
-    if(event.keyCode == 39) {
-        rightPressed = false;
-        stopMove();
-    }
-    else if(event.keyCode == 37) {
-        leftPressed = false;
-        stopMove();
-    }
-    else if(event.keyCode == 38) {
-    	upPressed = false;
-    	stopMove();
-    }
-}

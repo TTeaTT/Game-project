@@ -3,6 +3,8 @@
 <head>
 	<link rel="stylesheet" type="text/css" href="stylegameplay.css">
 	<script type="text/javascript" src="javascript/gamescript.js"></script>
+	<script type="text/javascript" src="javascript/musicOnOff.js"></script>
+	<script type="text/javascript" src="javascript/keyboard.js"></script>
 </head>
 <title>The Game</title>
 <body onload="startGame()">
@@ -11,7 +13,7 @@
 	</div>
 
 	<div align="right" id="volume" class="volume">
-		<img src="img/volume.png" alt="volume">
+		<img id="iImg" src="img/volume.png" alt="volume" onclick="changeVolImg()">
 	</div>
 	
 	<!--

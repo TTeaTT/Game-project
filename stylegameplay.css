@@ -6,7 +6,8 @@
 }*/
 
 body {
-	background: black;
+	background-image: url("img/brick.png");
+	background-color: black;
 }
 
 canvas {
